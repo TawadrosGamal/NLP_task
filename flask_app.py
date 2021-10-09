@@ -53,19 +53,19 @@ def output(chinese_text,model_path):
 
     
 
-def get_parser(default_opt, **kwargs):
+def get_parser(**kwargs):
     parser = argparse.ArgumentParser(description="NLP_demo")
     parser.add_argument("--prediction", help="make predictions from json app.",type=bool,default=False)
     parser.add_argument("--train", help="train the model on the inputed dataset.",type=bool,default=False)
     parser.add_argument("--word_freq", help="show positive and negative reviews word frequencies.",type=bool,default=False)
     parser.add_argument("--input_location", help="the input location to the model to train the data on.",
-    default="/NLP_models/sen_analysis/tf_model.h5",type=pathlib.Path)
+    default="tf_model.h5",type=pathlib.Path)
     parser.add_argument("--output_location", help="the output location of the new trained model."
-    ,type=pathlib.Path,required=True)
+    ,type=pathlib.Path)
     parser.add_argument("--dataset_path", help="the location of the desired dataset."
-    ,type=pathlib.Path,required=True)
+    ,type=pathlib.Path)
     parser.add_argument("--prediction_text", help="the chinese text to know it's sentiment."
-    ,type=ascii,required=True)
+    ,type=ascii)
 
     
     return parser
@@ -76,7 +76,8 @@ def get_parser(default_opt, **kwargs):
     
 
 if __name__ == "__main__":
-    args = get_parser().parse_args()
+    parser = get_parser()
+    args=parser.parse_args()
     args=vars(args)
     if args.prediction:
         prediction =output(args.prediction_text,args.input_location)
