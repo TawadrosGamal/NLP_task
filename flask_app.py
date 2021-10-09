@@ -59,7 +59,7 @@ def get_parser(**kwargs):
     parser.add_argument("--train", help="train the model on the inputed dataset.",type=bool,default=False)
     parser.add_argument("--word_freq", help="show positive and negative reviews word frequencies.",type=bool,default=False)
     parser.add_argument("--input_location", help="the input location to the model to train the data on.",
-    default="tf_model.h5",type=pathlib.Path)
+    default="NLP_models/sen_analysis/tf_model.h5",type=pathlib.Path)
     parser.add_argument("--output_location", help="the output location of the new trained model."
     ,type=pathlib.Path)
     parser.add_argument("--dataset_path", help="the location of the desired dataset."
