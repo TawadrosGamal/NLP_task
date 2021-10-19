@@ -2,16 +2,12 @@ from flask import jsonify
 import numpy as np
 import pandas as pd
 import flask
-import sklearn
 import ernie
 from ernie import SentenceClassifier
-from sklearn.preprocessing import LabelEncoder
 import argparse
 import advertools as adv
-import pathlib
-import requests
-from transformers import AutoTokenizer, AutoConfig
 import json
+from test import predict
 
 
 def train (dataset,input_location,output_location):
@@ -46,23 +42,14 @@ def word_frequency(dataset):
 
     return pos_js,neg_js
 
-def softmax(x):
-    e_x = np.exp(x - np.max(x))
-    return e_x / e_x.sum(axis=0)
+
 
 def output(chinese_text,model_path):
-    MAX_SEQ_LEN=100
-    text = chinese_text
-    encoded_input = tokenizer(text, pad_to_max_length=MAX_SEQ_LEN, max_length=MAX_SEQ_LEN)
-    payload={"instances": [{"input_ids": encoded_input['input_ids'], "attention_mask": encoded_input['attention_mask']}]}
-    print(encoded_input)
-    print("\n")
-    print(payload)
-    response = requests.post(url,headers=headers,data=json.dumps(payload))
-    print(json.loads(response.text))
-    prediction= softmax(json.loads(response.text)['predictions'][0][0])
-    print(softmax(json.loads(response.text)['predictions'][0]))
-    if(prediction>0.5):
+    classifier=SentenceClassifier(model_path='./sen_analysis')
+    probabilities = classifier.predict_one(chinese_text)
+    print(probabilities)
+
+    if(probabilities[0]>0.5):
         print("Positive")
         return [{'Sentiment':"Positive"}]
     else:
@@ -84,24 +71,16 @@ def get_parser(**kwargs):
     ,type=str)
     parser.add_argument("--prediction_text", help="the chinese text to know it's sentiment."
     ,type=ascii)
-
-
     return parser
 
 
-
-
-
-
 if __name__ == "__main__":
-    url = "http://localhost:8501/v1/models/bert_chinese:predict"
-    headers = {'Content-Type': 'application/json'}
-    tokenizer = AutoTokenizer.from_pretrained("./sen_analysis/tokenizer/")
-    parser = get_parser()
+    parser=get_parser()
     args=parser.parse_args()
     #args=vars(args)
     if args.prediction:
-        prediction =output(args.prediction_text,args.input_location)
+        #prediction =output(args.prediction_text,args.input_location)
+        predict(args.prediction_text)
     elif args.train:
         train(args.dataset_path,args.input_location,args.output_location)
     elif args.word_freq:
