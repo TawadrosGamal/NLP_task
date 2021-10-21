@@ -1,6 +1,12 @@
 Usage:
 
 
+saved model location: ./sen_analysis
+
+
+supported functions:
+
+
 Predict on sentence:
 
 python nlp_api.py --prediction True --prediction_text Chinese text
